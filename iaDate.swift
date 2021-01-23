@@ -28,6 +28,9 @@ enum CustomCalendarComponent: CaseIterable {
 enum IADateTypes: CaseIterable {
     case iaTimeStamp, date, unixTimeStamp
 }
+enum UnixTimeFormat {
+	case seconds, milliseconds, microseconds, nanoseconds
+}
 
 // MARK: - Structs
 struct MonthName {
@@ -160,6 +163,19 @@ class iaDate {
     init(iaTimeStamp: Int) {
         self.iaTimeStamp = iaTimeStamp
     }
+	init(unixTimeStamp: Double, format: UnixTimeFormat = .seconds) {
+		var expo: Double
+		switch format {
+		case .seconds: expo = 10e-1
+		case .milliseconds: expo = 10e-4
+		case .microseconds: expo = 10e-7
+		case .nanoseconds: expo = 10e-10
+		}
+		iaTimeStamp = toIAFrom(unix: Int(unixTimeStamp*expo))
+	}
+	convenience init(unixTimeStamp: Int, format: UnixTimeFormat = .seconds) {
+		self.init(unixTimeStamp: Double(unixTimeStamp), format: format)
+	}
     init(_ id: Int32) {
         self.iaTimeStamp = Int(id)
     }
